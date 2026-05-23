@@ -266,9 +266,7 @@ button:not(.btn-logout):hover {
   margin: 0;
   
 }
-#addStudentBtn{
-  color: black;
-}
+
 
 /* Search */
 .search-section {
@@ -636,4 +634,9 @@ button:not(.btn-logout):hover {
   .pending-item {
     flex-direction: column;
   }
+}
+.btn-action.btn-primary-action,
+button.btn-primary-action,
+#addStudentBtn {
+  color: #fff !important;
 }
