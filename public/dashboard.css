@@ -226,7 +226,7 @@ button:not(.btn-logout) {
   border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--surface);
-  color: var(--text);
+  color: black;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -264,6 +264,9 @@ button:not(.btn-logout):hover {
 #addStudentBtn,
 #pendingFeesBtn {
   margin: 0;
+  
+}
+#addStudentBtn{
   color: black;
 }
 
