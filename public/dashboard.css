@@ -264,6 +264,7 @@ button:not(.btn-logout):hover {
 #addStudentBtn,
 #pendingFeesBtn {
   margin: 0;
+  color: black;
 }
 
 /* Search */
