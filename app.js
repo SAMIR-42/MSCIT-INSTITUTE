@@ -56,15 +56,21 @@ const transporter = nodemailer.createTransport({
 app.post(
   "/signup",
   [
-    body("institute_name").notEmpty(),
-    body("institute_type").notEmpty(),
-    body("registration_number").notEmpty(),
-    body("address").notEmpty(),
-    body("admin_name").notEmpty(),
-    body("admin_email").isEmail(),
-    body("admin_mobile").notEmpty(),
-    body("username").notEmpty(),
-    body("password").isLength({ min: 6 }),
+    body("institute_name").notEmpty().withMessage("Institute name is required"),
+    body("institute_type").notEmpty().withMessage("Please select institute type"),
+    body("registration_number").notEmpty().withMessage("Registration number is required"),
+    body("address").notEmpty().withMessage("Address is required"),
+    body("admin_name").notEmpty().withMessage("Admin name is required"),
+    body("admin_email").isEmail().withMessage("Enter a valid email address"),
+    body("admin_mobile")
+      .notEmpty()
+      .withMessage("Mobile number is required")
+      .isLength({ min: 10, max: 10 })
+      .withMessage("Mobile must be 10 digits"),
+    body("username").notEmpty().withMessage("Username is required"),
+    body("password")
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -104,7 +110,31 @@ app.post(
         password_hash,
       ],
       (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+          if (err.code === "ER_DUP_ENTRY") {
+            const msg = err.message || "";
+            if (msg.includes("username"))
+              return res.status(400).json({
+                error:
+                  "This username is already taken. Please choose a different username.",
+              });
+            if (msg.includes("admin_email"))
+              return res.status(400).json({
+                error:
+                  "This email is already registered. Please use a different email or log in.",
+              });
+            if (msg.includes("registration_number"))
+              return res.status(400).json({
+                error:
+                  "This registration number is already in use. Please verify your details.",
+              });
+            return res.status(400).json({
+              error:
+                "Some details are already registered. Please change username, email, or registration number.",
+            });
+          }
+          return res.status(500).json({ error: err.message });
+        }
 
         // Fake OTP logic (no email sending)
         otpStore[admin_email] = {
@@ -140,8 +170,12 @@ app.post("/verify-otp", (req, res) => {
   }
 });
 
-// Serve signup page
+// Landing page
 app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/index.html"));
+});
+
+app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "views/signup.html"));
 });
 
@@ -620,206 +654,6 @@ app.post("/sendCourseMessage", (req, res) => {
   });
 });
 
-// Serve Create Test Page
-app.get("/create-test", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/create_test.html"));
-});
-
-// Save Test + Questions
-app.post("/save-test", async (req, res) => {
-  const { test_name, course_name, questions } = req.body;
-
-  if (!test_name || !course_name || !questions || questions.length === 0)
-    return res.status(400).json({ error: "Invalid data" });
-
-  // Insert test
-  db.query(
-    "INSERT INTO tests (test_name, course_name) VALUES (?, ?)",
-    [test_name, course_name],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-
-      const test_id = result.insertId;
-
-      // Insert questions
-      const qValues = questions.map((q) => [
-        test_id,
-        q.question_text,
-        q.marks,
-        q.option_a,
-        q.option_b,
-        q.option_c,
-        q.option_d,
-        q.correct_option,
-      ]);
-
-      db.query(
-        `INSERT INTO test_questions
-              (test_id, question_text, marks, option_a, option_b, option_c, option_d, correct_option)
-              VALUES ?`,
-        [qValues],
-        (err2) => {
-          if (err2) return res.status(500).json({ error: err2.message });
-          res.json({ message: "Test saved successfully!" });
-        }
-      );
-    }
-  );
-});
-
-// Get all tests
-app.get("/view-tests", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/view-tests.html"));
-});
-app.get("/get-tests", (req, res) => {
-  db.query("SELECT * FROM tests ORDER BY created_at DESC", (err, results) => {
-    if (err) return res.status(500).send([]);
-    res.json(results);
-  });
-});
-
-// Get questions for a specific test
-app.get("/get-test-questions/:test_id", (req, res) => {
-  const test_id = req.params.test_id;
-  db.query(
-    "SELECT * FROM test_questions WHERE test_id = ?",
-    [test_id],
-    (err, results) => {
-      if (err) return res.status(500).send([]);
-      res.json(results);
-    }
-  );
-});
-
-// Fetch all tests
-app.get("/api/get-tests", (req, res) => {
-  db.query("SELECT * FROM tests", (err, results) => {
-    if (err) return res.status(500).send("DB Error");
-    res.json(results);
-  });
-});
-
-// Delete test
-app.delete("/api/delete-test/:id", (req, res) => {
-  const { id } = req.params;
-  db.query("DELETE FROM tests WHERE id = ?", [id], (err, result) => {
-    if (err) return res.status(500).send("Error deleting test");
-    res.send("Test deleted successfully!");
-  });
-});
-
-//link se take-test page pe redirect
-// Serve Take Test Page
-app.get("/take-test/:id", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/take-test.html"));
-});
-
-// Save student test result
-app.post("/api/submit-test", (req, res) => {
-  const { test_id, name, course, email, answers } = req.body;
-
-  if (!test_id || !name || !course || !email || !answers)
-    return res.status(400).json({ error: "Invalid data" });
-
-  // Pehle saare questions fetch kar ke marks check karte hai
-  db.query(
-    "SELECT * FROM test_questions WHERE test_id = ?",
-    [test_id],
-    (err, questions) => {
-      if (err) return res.status(500).json({ error: err.message });
-
-      let totalMarks = 0;
-      questions.forEach((q) => {
-        const given = answers[q.id]; // user ne kya select kiya
-        if (given && given.toUpperCase() === q.correct_option.toUpperCase()) {
-          totalMarks += q.marks;
-        }
-      });
-
-      // Ab student ka result store karte hai
-      db.query(
-        "INSERT INTO student_results (test_id, name, course, email, total_marks) VALUES (?, ?, ?, ?, ?)",
-        [test_id, name, course, email, totalMarks],
-        (err2) => {
-          if (err2) return res.status(500).json({ error: err2.message });
-          res.json({
-            message: "Test submitted successfully!",
-            total: totalMarks,
-          });
-        }
-      );
-    }
-  );
-});
-// Serve results page
-app.get("/view-results", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/view-results.html"));
-});
-
-// Get all student results in dashboard result btn
-app.get("/api/get-results", (req, res) => {
-  db.query(
-    `SELECT r.id, r.name, r.course, r.email, r.total_marks, r.submitted_at, t.test_name
-     FROM student_results r
-     JOIN tests t ON r.test_id = t.id
-     ORDER BY r.submitted_at DESC`,
-    (err, results) => {
-      if (err) return res.status(500).send([]);
-      res.json(results);
-    }
-  );
-});
-
-// Delete result
-app.delete("/api/delete-result/:id", (req, res) => {
-  const { id } = req.params;
-  db.query("DELETE FROM student_results WHERE id = ?", [id], (err, result) => {
-    if (err) return res.status(500).send("Error deleting result");
-    res.send("Result deleted successfully!");
-  });
-});
-
-// Send all results by email all students.
-app.post("/api/send-all-results", (req, res) => {
-  db.query(
-    `SELECT r.name, r.course, r.email, r.total_marks, r.submitted_at, t.test_name
-     FROM student_results r
-     JOIN tests t ON r.test_id = t.id`,
-    async (err, results) => {
-      if (err) return res.status(500).send("DB Error");
-
-      if (!results.length) return res.status(400).send("No results found.");
-
-      for (const r of results) {
-        const mailOptions = {
-          from: "YOUR_EMAIL@gmail.com", // ← tu yaha apna set wala sender daal
-          to: r.email,
-          subject: `Your Test Result - ${r.test_name}`,
-          html: `
-            <h3>Test Result Summary</h3>
-            <p><b>Test:</b> ${r.test_name}</p>
-            <p><b>Name:</b> ${r.name}</p>
-            <p><b>Course:</b> ${r.course}</p>
-            <p><b>Marks:</b> ${r.total_marks}</p>
-            <p><b>Submitted:</b> ${new Date(
-              r.submitted_at
-            ).toLocaleString()}</p>
-            <p>Thank you for appearing in the test.</p>
-          `,
-        };
-
-        try {
-          await transporter.sendMail(mailOptions);
-        } catch (e) {
-          console.error(`Error sending to ${r.email}:`, e.message);
-        }
-      }
-
-      res.send("Results sent successfully to all students!");
-    }
-  );
-});
-
 //send notes from student to email
 
 app.post("/send-course-notes", uploadNotes.single("file"), (req, res) => {
@@ -851,18 +685,6 @@ app.post("/send-course-notes", uploadNotes.single("file"), (req, res) => {
       res.send("Notes sent successfully to all students!");
     }
   );
-});
-// Check if student already attempted
-app.get("/api/check-attempt", (req, res) => {
-  const { test_id, email } = req.query;
-  if (!test_id || !email) return res.json({ attempted: false });
-
-  const sql =
-    "SELECT COUNT(*) AS cnt FROM student_results WHERE test_id=? AND email=?";
-  db.query(sql, [test_id, email], (err, results) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    res.json({ attempted: results[0].cnt > 0 });
-  });
 });
 // Folder for uploads
 const examFolder = path.join(__dirname, "public/uploads/exams");
