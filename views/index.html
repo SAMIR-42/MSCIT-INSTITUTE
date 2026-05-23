@@ -3,130 +3,119 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome | MSCIT Institute</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
-
-      body {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(-45deg, #1a73e8, #4a148c, #00c6ff, #0072ff);
-        background-size: 400% 400%;
-        animation: gradientMove 8s ease infinite;
-        overflow: hidden;
-      }
-
-      @keyframes gradientMove {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-
-      .main {
-        text-align: center;
-        color: white;
-        animation: fadeIn 2s ease;
-        width: 90%;
-        max-width: 500px;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(40px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        letter-spacing: 1px;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-      }
-
-      p {
-        font-size: 1.1rem;
-        margin-bottom: 30px;
-        color: #f5f5f5;
-      }
-
-      .btn-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
-      }
-
-      a {
-        text-decoration: none;
-      }
-
-      .btn {
-        padding: 12px 28px;
-        border: none;
-        border-radius: 30px;
-        background: rgba(255, 255, 255, 0.15);
-        color: #fff;
-        font-size: 1rem;
-        backdrop-filter: blur(10px);
-        cursor: pointer;
-        transition: 0.4s;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-      }
-
-      .btn:hover {
-        transform: translateY(-4px);
-        background: #fff;
-        color: #222;
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-      }
-
-      footer {
-        position: absolute;
-        bottom: 10px;
-        text-align: center;
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.9rem;
-        width: 100%;
-      }
-
-      @media (max-width: 480px) {
-        h1 {
-          font-size: 2rem;
-        }
-        .btn {
-          width: 100%;
-        }
-      }
-    </style>
+    <title>MSCIT Institute — Student Management Portal</title>
+    <link rel="stylesheet" href="/landing.css" />
   </head>
   <body>
-    <div class="main">
-      <h1>Welcome to MSCIT Institute</h1>
-      <p>Empowering Students with Digital Skills</p>
-      <div class="btn-container">
-        <a href="/login.html"><button class="btn">Login</button></a>
-        <a href="/signup.html"><button class="btn">Sign Up</button></a>
+    <nav class="landing-nav">
+      <div class="brand">
+        <div class="brand-icon">M</div>
+        <span>MSCIT Institute</span>
       </div>
-    </div>
+      <div class="nav-actions">
+        <a href="/login" class="btn btn-ghost">Login</a>
+        <a href="/signup" class="btn btn-primary">Sign Up</a>
+      </div>
+    </nav>
 
-    <footer>© 2025 MSCIT Institute | Learn. Code. Grow.</footer>
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <span class="hero-badge">Digital Institute Management</span>
+          <h1>
+            Manage Your Institute with
+            <span>Confidence & Clarity</span>
+          </h1>
+          <p class="hero-lead">
+            Welcome to MSCIT Institute Portal — your all-in-one platform for
+            student records, typing batches, course fees, exam registrations,
+            and instant communication with learners.
+          </p>
+          <div class="hero-cta">
+            <a href="/login" class="btn btn-primary">Institute Login</a>
+            <a href="/signup" class="btn btn-ghost">Register New Institute</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h3>Everything in One Dashboard</h3>
+          <div class="stat-grid">
+            <div class="stat-item">
+              <strong>MSCIT</strong>
+              <span>Student Records</span>
+            </div>
+            <div class="stat-item">
+              <strong>Typing</strong>
+              <span>Batch Management</span>
+            </div>
+            <div class="stat-item">
+              <strong>Fees</strong>
+              <span>Pending Tracking</span>
+            </div>
+            <div class="stat-item">
+              <strong>Exam</strong>
+              <span>Form & Students</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="features" id="features">
+      <div class="section-title">
+        <h2>Built for Real Institutes</h2>
+        <p>Simple, fast, and professional tools for daily operations</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">👨‍🎓</div>
+          <h3>MSCIT Students</h3>
+          <p>Add students, search instantly, update fees, and track pending payments.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">⌨️</div>
+          <h3>Typing Batches</h3>
+          <p>Manage typing students, batches, and fee reminders in one place.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h3>Courses & Messaging</h3>
+          <p>Create courses, enroll students, send notes and messages by email.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Exam Registration</h3>
+          <p>Collect exam forms online and view registered students easily.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <h2>Ready to streamline your institute?</h2>
+      <p>Join MSCIT Institute Portal and manage students smarter today.</p>
+      <a href="/signup" class="btn btn-primary" style="background: #fff; color: var(--primary)">Get Started Free</a>
+    </section>
+
+    <footer class="landing-footer">
+      © 2025 MSCIT Institute · Learn · Code · Grow.
+    </footer>
+
+    <script>
+      if (localStorage.getItem("mscitinstitute")) {
+        window.location.replace("/dashboard");
+      }
+      if (sessionStorage.getItem("mscit_logged_out")) {
+        history.pushState(null, "", location.href);
+        window.addEventListener("popstate", () => {
+          if (!localStorage.getItem("mscitinstitute")) {
+            history.pushState(null, "", location.href);
+          }
+        });
+      }
+      window.addEventListener("pageshow", (e) => {
+        if (localStorage.getItem("mscitinstitute")) {
+          window.location.replace("/dashboard");
+        }
+      });
+    </script>
   </body>
 </html>

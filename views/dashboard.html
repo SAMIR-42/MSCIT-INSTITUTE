@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="/dashboard.css" />
   </head>
   <body>
+    <header class="dash-header">
+      <div class="dash-header-inner">
+        <a href="/dashboard" class="dash-logo">
+          <span class="dash-logo-icon">M</span>
+          <span>MSCIT Portal</span>
+        </a>
+        <button type="button" id="logoutBtn" class="btn-logout">Logout</button>
+      </div>
+    </header>
+
     <div class="container dashboard-container">
       <main class="card profile-card">
         <div class="profile-left">
@@ -19,106 +29,147 @@
         </div>
       </main>
 
-      <div style="text-align: center; margin-top: 16px">
-        <button id="logoutBtn">Logout</button>
+      <div class="dash-grid">
+        <!-- MSCIT Students -->
+        <section class="dash-panel">
+          <div class="panel-head">
+            <h3 class="panel-title">MSCIT Students</h3>
+            <p class="panel-desc">Add, search, and manage MSCIT student records</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" id="addStudentBtn" class="btn-action btn-primary-action">
+              Add MSCIT Student
+            </button>
+            <button type="button" id="pendingFeesBtn" class="btn-action">
+              View Pending Fees
+            </button>
+          </div>
+          <div class="search-section">
+            <label for="searchInput" class="sr-only">Search student</label>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search student by name..."
+            />
+            <div id="searchResults"></div>
+          </div>
+          <div id="pendingFeesList" class="pending-fees-box"></div>
+        </section>
+
+        <!-- Typing -->
+        <section class="dash-panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Typing Batch</h3>
+            <p class="panel-desc">Typing students, fees, and batch management</p>
+          </div>
+          <div id="typingStudentCount" class="stat-badge">Total Typing Students: 0</div>
+          <div class="panel-actions panel-actions-grid">
+            <button
+              type="button"
+              id="addTypingStudent"
+              onclick="window.location.href='/views/add-typing-student.html'"
+              class="btn-action"
+            >
+              Add Typing Student
+            </button>
+            <button
+              type="button"
+              id="viewTypingStudents"
+              onclick="window.location.href='view-typing-students.html'"
+              class="btn-action"
+            >
+              View Typing Students
+            </button>
+            <button type="button" id="pendingTypingFeesBtn" class="btn-action">
+              View Typing Pending Fees
+            </button>
+          </div>
+        </section>
+
+        <!-- Courses -->
+        <section class="dash-panel dash-panel-wide">
+          <div class="panel-head">
+            <h3 class="panel-title">Courses</h3>
+            <p class="panel-desc">Create courses and manage enrolled students</p>
+          </div>
+          <h2 class="section-label">Add New Course</h2>
+          <form id="addCourseForm" class="inline-form">
+            <input type="text" name="name" placeholder="Course Name" required />
+            <input type="text" name="batch" placeholder="Batch (Morning/Evening)" />
+            <input
+              type="number"
+              name="total_fees"
+              placeholder="Total Fees"
+              required
+            />
+            <button type="submit">Add Course</button>
+          </form>
+          <h3 class="section-label">Available Courses</h3>
+          <div id="courseList" class="course-list"></div>
+          <div id="addStudentSection"></div>
+        </section>
+
+        <!-- Communication -->
+        <section class="dash-panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Communication</h3>
+            <p class="panel-desc">Send notes and messages to course students</p>
+          </div>
+          <button
+            type="button"
+            class="btn-action btn-primary-action"
+            onclick="window.location.href='/send-notes.html'"
+          >
+            Send Notes
+          </button>
+          <h2 class="section-label">Send Message</h2>
+          <div id="sendMsgSection">
+            <form id="sendMsgForm">
+              <label for="courseSelect">Select Course:</label>
+              <select id="courseSelect" name="course_id" required></select>
+              <label for="messageText">Message:</label>
+              <textarea
+                id="messageText"
+                name="message"
+                placeholder="Type your message..."
+                required
+              ></textarea>
+              <div class="send-options">
+                <label
+                  ><input type="radio" name="sendType" value="all" checked />
+                  Send to All Students</label
+                >
+                <label
+                  ><input type="radio" name="sendType" value="pending" /> Send to
+                  Pending Fees Students</label
+                >
+              </div>
+              <button type="submit">Send Message</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Exam -->
+        <section class="dash-panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Exam Registration</h3>
+            <p class="panel-desc">Online exam forms and registered students</p>
+          </div>
+          <div class="panel-actions panel-actions-grid">
+            <button
+              type="button"
+              class="btn-action btn-primary-action"
+              onclick="window.location.href='/exam-form'"
+            >
+              Exam Form
+            </button>
+            <a href="/exam-students" class="btn-action btn-link-style">
+              See Exam Form Students
+            </a>
+          </div>
+        </section>
       </div>
     </div>
-
-    <div style="text-align: center; margin-top: 16px">
-      <button id="addStudentBtn">Add MSCIT Student</button>
-    </div>
-
-    <div class="search-section">
-      <h3>Search Student</h3>
-      <input type="text" id="searchInput" placeholder="Enter student name..." />
-      <div id="searchResults"></div>
-    </div>
-
-    <div style="text-align: center; margin-top: 16px">
-      <button id="pendingFeesBtn">View Pending Fees</button>
-    </div>
-    <div id="pendingFeesList"></div>
-
-    <button
-      id="addTypingStudent"
-      onclick="window.location.href='/views/add-typing-student.html'"
-    >
-      Add Typing Student
-    </button>
-
-    <button
-      id="viewTypingStudents"
-      onclick="window.location.href='view-typing-students.html'"
-    >
-      View Typing Students
-    </button>
-
-    <button id="pendingTypingFeesBtn">View Typing Pending Fees</button>
-
-    <div id="typingStudentCount">Total Typing Students: 0</div>
-
-    <h2>Add New Course</h2>
-    <form id="addCourseForm">
-      <input type="text" name="name" placeholder="Course Name" required />
-      <input type="text" name="batch" placeholder="Batch (Morning/Evening)" />
-      <input
-        type="number"
-        name="total_fees"
-        placeholder="Total Fees"
-        required
-      />
-      <button type="submit">Add Course</button>
-    </form>
-
-    <h3>Available Courses</h3>
-    <div id="courseList"></div>
-
-    <div id="addStudentSection"></div>
-
-    <button onclick="window.location.href='/send-notes.html'">
-      Send Notes
-    </button>
-
-    <h2>Send Message</h2>
-    <div id="sendMsgSection">
-      <form id="sendMsgForm">
-        <label>Select Course:</label>
-        <select id="courseSelect" name="course_id" required></select>
-
-        <label>Message:</label>
-        <textarea
-          id="messageText"
-          name="message"
-          placeholder="Type your message..."
-          required
-        ></textarea>
-
-        <div class="send-options">
-          <label
-            ><input type="radio" name="sendType" value="all" checked /> Send to
-            All Students</label
-          >
-          <label
-            ><input type="radio" name="sendType" value="pending" /> Send to
-            Pending Fees Students</label
-          >
-        </div>
-
-        <button type="submit">Send Message</button>
-      </form>
-    </div>
-
-    <button id="createTestBtn">Create Test</button>
-
-    <button onclick="window.location.href='/view-tests'">View All Tests</button>
-
-    <button onclick="window.location.href='/view-results'">View Results</button>
-
-    <button onclick="window.location.href='/exam-form'">Exam Form</button>
-
-    <a href="/exam-students">
-      <button>See Exam Form Students</button>
-    </a>
 
     <footer class="footer">
       <div class="footer-container">
@@ -129,17 +180,14 @@
             career-ready skills since 2010.
           </p>
         </div>
-
         <div class="footer-section">
           <h4>Quick Links</h4>
           <ul>
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/add-student">Add Student</a></li>
             <li><a href="/exam-students">Exam Students</a></li>
-            <li><a href="/login">Logout</a></li>
           </ul>
         </div>
-
         <div class="footer-section">
           <h4>Contact Us</h4>
           <p>📍 Near City Library, Pune, Maharashtra</p>
@@ -147,11 +195,10 @@
           <p>✉️ info@mscitinstitute.in</p>
         </div>
       </div>
-
       <div class="footer-bottom">
         <p>© 2025 MS-CIT Institute. All Rights Reserved.</p>
       </div>
-    </footer>    
+    </footer>
 
     <script src="/dashboard.js"></script>
   </body>

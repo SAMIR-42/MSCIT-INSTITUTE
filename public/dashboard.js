@@ -1,7 +1,7 @@
 // read institute from localStorage and show; if not present redirect to login
 const instRaw = localStorage.getItem("mscitinstitute");
 if (!instRaw) {
-  window.location.href = "/login";
+  window.location.replace("/login");
 } else {
   const inst = JSON.parse(instRaw);
   document.getElementById("iname").innerText = inst.institute_name || "";
@@ -12,7 +12,8 @@ if (!instRaw) {
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.removeItem("mscitinstitute");
-  window.location.href = "/login";
+  sessionStorage.setItem("mscit_logged_out", "1");
+  window.location.replace("/");
 });
 
 // existing code ke niche add ye lines
@@ -376,8 +377,17 @@ sendMsgForm.addEventListener("submit", async (e) => {
   alert(msg);
   sendMsgForm.reset();
 });
-//create test file open by dashboard btn
-document.getElementById("createTestBtn").addEventListener("click", () => {
-  // Alag file open karenge
-  window.location.href = "/create-test";
+// Prevent browser back while logged in on dashboard
+history.pushState(null, "", location.href);
+window.addEventListener("popstate", () => {
+  history.pushState(null, "", location.href);
+});
+
+// Block bfcache return without session
+window.addEventListener("pageshow", (e) => {
+  if (!localStorage.getItem("mscitinstitute")) {
+    window.location.replace("/login");
+  } else if (e.persisted) {
+    history.pushState(null, "", location.href);
+  }
 });
