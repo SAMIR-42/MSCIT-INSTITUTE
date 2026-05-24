@@ -226,7 +226,6 @@ button:not(.btn-logout) {
   border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--surface);
-  color: black;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -635,8 +634,12 @@ button:not(.btn-logout):hover {
     flex-direction: column;
   }
 }
-.btn-action.btn-primary-action,
-button.btn-primary-action,
-#addStudentBtn {
-  color: #fff !important;
+.btn-primary-action {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.btn-primary-action * {
+  color: #ffffff !important;
 }
