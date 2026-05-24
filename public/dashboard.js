@@ -1,4 +1,4 @@
-// read institute from localStorage and show; if not present redirect to login
+// check user session aur institute data localStorage me hai ya nahi, agar nahi hai to login page pe redirect kar do
 const instRaw = localStorage.getItem("mscitinstitute");
 if (!instRaw) {
   window.location.replace("/login");
@@ -256,7 +256,7 @@ function closeAddStudent() {
   document.getElementById("addStudentSection").innerHTML = "";
 }
 
-// 🔹 View Students + Edit/Delete Options
+// View Students and Edit/Delete Options
 async function viewStudents(course_id, course_name) {
   const res = await fetch(`/getCourseStudents/${course_id}`);
   const students = await res.json();
@@ -287,7 +287,7 @@ async function viewStudents(course_id, course_name) {
   div.innerHTML = html;
 }
 
-// 🔹 Edit Student
+//  Edit Student
 function editStudent(id, name, contact, fees_paid) {
   const li = document.getElementById(`student_${id}`);
   li.innerHTML = `
@@ -324,7 +324,7 @@ function cancelEdit(id, name, contact, fees_paid) {
   `;
 }
 
-// 🔹 Delete Student
+//  Delete Student
 async function deleteStudent(id, course_id) {
   if (!confirm("Delete this student?")) return;
   const res = await fetch(`/deleteStudent/${id}`, { method: "DELETE" });

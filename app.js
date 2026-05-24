@@ -151,7 +151,7 @@ app.post(
   }
 );
 
-// Verify OTP (FAKE)
+// Verify OTP (FAKE he abhi)
 app.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
 
@@ -179,7 +179,7 @@ app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "views/signup.html"));
 });
 
-// POST /login  -> verify username + password
+// POST /login  verify username + password
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
@@ -277,7 +277,7 @@ app.post("/add-student", upload.single("photo"), (req, res) => {
   );
 });
 
-// 🔍 SEARCH students
+// 🔍 SEARCH kro student ko 
 app.get("/search-students", (req, res) => {
   const { name, inst } = req.query;
   const sql = `SELECT id, student_name FROM students WHERE institute_id = ? AND student_name LIKE ? LIMIT 10`;
@@ -311,7 +311,7 @@ app.put("/student/:id", (req, res) => {
   );
 });
 
-// ❌ DELETE student
+// DELETE student krenge
 app.delete("/student/:id", (req, res) => {
   const sql = `DELETE FROM students WHERE id = ?`;
   db.query(sql, [req.params.id], (err) => {
@@ -961,9 +961,6 @@ app.delete("/api/exam-student/:id", (req, res) => {
   });
 });
 
-// app.listen(process.env.PORT, () =>
-//   console.log(`Server running on port ${process.env.PORT}`)
-// );
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
